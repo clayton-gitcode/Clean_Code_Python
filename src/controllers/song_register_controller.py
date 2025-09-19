@@ -1,4 +1,9 @@
+
+from src.models.entities.music import Music
+from src.models.repositories.musics_repository import musics_repository
+
 class SongRegisterController:
+    
     def insert(self, new_song_information: dict) -> dict:
         """
         Insere uma nova música após validar as informações e verificar duplicidade.
@@ -28,7 +33,11 @@ class SongRegisterController:
             Exception: Se a música já estiver cadastrada.
         """
         #interact with Model
-        pass
+        new_song_title = new_song_information["title"]
+        search_response = musics_repository.find_music(new_song_title)
+
+        if search_response is not None:
+            raise Exception("Musica já cadastrada!")
 
     def __verify_songs_infos(self, new_song_information: dict) -> None:
         """
@@ -54,7 +63,12 @@ class SongRegisterController:
         Args:
             new_song_information (dict): Informações da música.
         """
-        pass
+        new_music = Music(
+            title=new_song_information["title"],
+            artist=new_song_information["artist"],
+            year=int(new_song_information["year"])
+        )
+        musics_repository.insert_music(new_music)
     
     def __format_response(self, new_song_information: dict) -> dict:
         """
